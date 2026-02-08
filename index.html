@@ -6,12 +6,31 @@
     <title>Document</title>
   </head>
   <body>
-    <form id="form">
-      <input type="text" name="name" placeholder="Digite seu nome" />
-      <input type="email" name="email" placeholder="Digite seu email" />
-      <input type="password" name="password" placeholder="Digite sua senha" />
-      <button type="submit">Enviar</button>
-    </form>
+    <!-- Formulário de Cadastro -->
+    <div id="register-container">
+      <h2>Cadastro</h2>
+      <form id="form">
+        <input type="text" name="name" placeholder="Digite seu nome" />
+        <input type="email" name="email" placeholder="Digite seu email" />
+        <input type="password" name="password" placeholder="Digite sua senha" />
+        <button type="submit">Cadastrar</button>
+      </form>
+      <p>Já possui uma conta? <button id="show-login">Fazer login</button></p>
+    </div>
+
+    <!-- Formulário de Login -->
+    <div id="login-container" style="border: none">
+      <h2>Login</h2>
+      <form id="loginForm">
+        <input type="email" name="email" placeholder="Digite seu email" />
+        <input type="password" name="password" placeholder="Digite sua senha" />
+        <button type="submit">Entrar</button>
+      </form>
+      <p>
+        Não possui uma conta? <button id="show-register">Cadastrar-se</button>
+      </p>
+    </div>
+
     <script type="module" src="./js/imports.js"></script>
   </body>
 </html>
