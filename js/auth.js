@@ -15,6 +15,8 @@ export async function login(email, password) {
     `/users?email=${email}&password=${password}`,
   );
   if (existUserEmail.length === 0) {
-    throw new Error("");
+    throw new Error("Invalid password or email.");
+  } else {
+    return existUserEmail[0];
   }
 }
