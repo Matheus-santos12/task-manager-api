@@ -1,9 +1,11 @@
-import { createUser } from "./router.js";
+import { register } from "./auth.js";
 
 const form = document.getElementById("form");
 
+console.log("formulário encontrado", form);
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
+  console.log("Submit capturado");
 
   const form = event.target;
   const name = form.name.value;
@@ -17,7 +19,9 @@ form.addEventListener("submit", async (event) => {
   };
 
   try {
-    await createUser(payload);
+    await register(payload);
+    alert("Seu cadastro foi realizado com sucesso!");
+    form.reset();
   } catch (error) {
     alert(error.message);
     return;
