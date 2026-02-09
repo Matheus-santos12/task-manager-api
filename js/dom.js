@@ -21,7 +21,6 @@ form.addEventListener("submit", async (event) => {
     alert("Seu cadastro foi realizado com sucesso!");
     form.reset();
   } catch (error) {
-    alert(error.message);
     alert("Verifique os dados informados e tente novamente.");
     return;
   }

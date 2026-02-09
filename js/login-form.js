@@ -15,7 +15,7 @@ buttonShowRegister.addEventListener("click", () => {
   registerContainer.style.display = "block";
 });
 
-const loginForm = document.getElementById("login-form");
+const loginForm = document.getElementById("loginForm");
 
 loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
