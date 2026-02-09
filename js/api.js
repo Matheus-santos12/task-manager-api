@@ -18,4 +18,27 @@ async function post(endpoint, data) {
   return await res.json();
 }
 
-export { get, post };
+async function patch(endpoint, data) {
+  const res = await fetch(`${API_URL}${endpoint}`, {
+    method: "PATCH",
+    headers: {
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  return await res.json();
+}
+
+async function del(endpoint) {
+  const res = await fetch(`${API_URL}${endpoint}`, {
+    method: "DELETE",
+    headers: {
+      "Content-type": "application/json",
+    },
+  });
+
+  return await res.json();
+}
+
+export { del, get, patch, post };
