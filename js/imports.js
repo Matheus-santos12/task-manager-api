@@ -1,2 +1,4 @@
-import {} from "./auth.js";
-import {} from "./dom.js";
+import "./auth.js";
+import "./dashboard.js";
+import "./dom.js";
+import "./login-form.js";

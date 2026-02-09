@@ -2,10 +2,8 @@ import { register } from "./auth.js";
 
 const form = document.getElementById("form");
 
-console.log("formulário encontrado", form);
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
-  console.log("Submit capturado");
 
   const form = event.target;
   const name = form.name.value;
@@ -24,6 +22,7 @@ form.addEventListener("submit", async (event) => {
     form.reset();
   } catch (error) {
     alert(error.message);
+    alert("Verifique os dados informados e tente novamente.");
     return;
   }
 });
