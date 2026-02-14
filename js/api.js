@@ -67,6 +67,11 @@ async function del(endpoint) {
     if (!res.ok) {
       throw new Error(`Error: ${res.status} ${res.statusText}`);
     }
+
+    if (res.status === 204) {
+      return null;
+    }
+
     return await res.json();
   } catch (error) {
     console.error("Houve uma falha na requisição:", error);
