@@ -37,10 +37,25 @@ function renderTasks(tasks) {
 
   tasks.forEach((task) => {
     const listItem = document.createElement("li");
+    listItem.dataset.id = task.id;
+
     listItem.innerHTML = `
     <input type="checkbox" ${task.completed ? "checked" : ""}> 
     <span>${task.title}</span> 
     <button class="delete-btn">Deletar</button>`;
+
+    const checkbox = listItem.querySelector("input");
+    const deleteBtn = listItem.querySelector(".delete-btn");
+
+    checkbox.addEventListener("change", async () => {
+      await toggleTask(task.id, task.completed);
+      renderTasks(await fetchTasks());
+    });
+
+    deleteBtn.addEventListener("click", async (event) => {
+      await deleteTask(task.id);
+      renderTasks(await fetchTasks());
+    });
 
     taskList.appendChild(listItem);
   });
