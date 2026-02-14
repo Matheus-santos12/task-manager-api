@@ -1,7 +1,17 @@
+import { checkAuth } from "./router.js";
 import { fetchTasks } from "./tasks.js";
 
+checkAuth();
+
 console.log(" O arquivo está sendo carregado");
+
 const logoutButton = document.getElementById("logout");
+const welcomeMessage = document.getElementById("welcome-message");
+const user = JSON.parse(window.localStorage.getItem("user"));
+
+if (welcomeMessage && user) {
+  welcomeMessage.textContent = `Seja bem-vindo, ${user.name}!`;
+}
 
 logoutButton.addEventListener("click", (event) => {
   event.preventDefault();
@@ -9,22 +19,29 @@ logoutButton.addEventListener("click", (event) => {
   window.location.href = "index.html";
 });
 
-if (!window.localStorage.getItem("user")) {
-  window.location.href = "index.html";
-} else {
-  console.log(" O usuário está logado");
-  const user = JSON.parse(window.localStorage.getItem("user"));
-  const welcomeMessage = document.getElementById("welcome-message");
-  welcomeMessage.textContent = `Seja bem-vindo, ${user.name}!`;
-  window.location.href = "dashboard.html";
-  console.log(user);
+async function init() {
+  try {
+    const tasks = await fetchTasks();
+    console.log("Tarefas carregadas", tasks);
+    renderTasks(tasks);
+  } catch (error) {
+    console.error("Erro ao carregar tarefas:", error);
+  }
 }
 
-async function init() {
-  console.log("Iniciando a página🔴");
-  const tasks = await fetchTasks();
-  console.log(tasks);
-}
-console.log(" Chama a função init🔴");
 init();
-console.log(" Chamou a função init🔴");
+
+function renderTasks(tasks) {
+  const taskList = document.getElementById("task-list");
+  taskList.innerHTML = "";
+
+  tasks.forEach((task) => {
+    const listItem = document.createElement("li");
+    listItem.innerHTML = `
+    <input type="checkbox" ${task.completed ? "checked" : ""}> 
+    <span>${task.title}</span> 
+    <button class="delete-btn">Deletar</button>`;
+
+    taskList.appendChild(listItem);
+  });
+}
