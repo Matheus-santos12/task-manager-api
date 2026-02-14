@@ -1,4 +1,4 @@
-import { get, patch } from "./api.js";
+import { del, get, patch, post } from "./api.js";
 
 const user = JSON.parse(window.localStorage.getItem("user"));
 
