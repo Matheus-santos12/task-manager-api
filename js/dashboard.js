@@ -1,16 +1,17 @@
 import { checkAuth } from "./router.js";
-import { fetchTasks } from "./tasks.js";
+import { createTask, fetchTasks } from "./tasks.js";
 
 checkAuth();
-
-console.log(" O arquivo está sendo carregado");
 
 const logoutButton = document.getElementById("logout");
 const welcomeMessage = document.getElementById("welcome-message");
 const user = JSON.parse(window.localStorage.getItem("user"));
+const textNewTask = document.getElementById("text-new-task");
+const toAdd = document.getElementById("to-add");
+const tasksList = document.getElementById("to-do-list");
 
 if (welcomeMessage && user) {
-  welcomeMessage.textContent = `Seja bem-vindo, ${user.name}!`;
+  welcomeMessage.textContent = `Seja bem-vindo(a), ${user.name}!`;
 }
 
 logoutButton.addEventListener("click", (event) => {
@@ -22,7 +23,6 @@ logoutButton.addEventListener("click", (event) => {
 async function init() {
   try {
     const tasks = await fetchTasks();
-    console.log("Tarefas carregadas", tasks);
     renderTasks(tasks);
   } catch (error) {
     console.error("Erro ao carregar tarefas:", error);
@@ -32,31 +32,38 @@ async function init() {
 init();
 
 function renderTasks(tasks) {
-  const taskList = document.getElementById("task-list");
-  taskList.innerHTML = "";
-
+  tasksList.innerHTML = "";
   tasks.forEach((task) => {
-    const listItem = document.createElement("li");
-    listItem.dataset.id = task.id;
-
-    listItem.innerHTML = `
-    <input type="checkbox" ${task.completed ? "checked" : ""}> 
-    <span>${task.title}</span> 
-    <button class="delete-btn">Deletar</button>`;
-
-    const checkbox = listItem.querySelector("input");
-    const deleteBtn = listItem.querySelector(".delete-btn");
-
-    checkbox.addEventListener("change", async () => {
-      await toggleTask(task.id, task.completed);
-      renderTasks(await fetchTasks());
-    });
-
-    deleteBtn.addEventListener("click", async (event) => {
-      await deleteTask(task.id);
-      renderTasks(await fetchTasks());
-    });
-
-    taskList.appendChild(listItem);
+    const element = createTaskElement(task);
+    tasksList.appendChild(element);
   });
 }
+
+function createTaskElement(task) {
+  const element = document.createElement("li");
+  element.textContent = task.title;
+  return element;
+}
+
+async function handlerAddTodo() {
+  const title = textNewTask.value.trim();
+  if (!title) {
+    alert("Por favor, digite o título da nova tarefa!");
+    return;
+  }
+
+  try {
+    const newTask = await createTask(title);
+
+    // Cria o visual.
+    const element = createTaskElement(newTask);
+    tasksList.appendChild(element);
+    textNewTask.value = "";
+    console.log("Tarefa adicionada com sucesso:", newTask);
+  } catch (error) {
+    alert("Não foi possível salvar a tarefa no banco de dados.");
+    console.error("Erro ao adicionar tarefa:", error);
+  }
+}
+
+toAdd.addEventListener("click", handlerAddTodo);
