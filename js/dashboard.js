@@ -1,23 +1,25 @@
 import { checkAuth } from "./router.js";
-import { createTask, fetchTasks } from "./tasks.js";
+import { createTask, deleteTask, fetchTasks, updateTask } from "./tasks.js";
 
 checkAuth();
 
 const logoutButton = document.getElementById("logout");
 const welcomeMessage = document.getElementById("welcome-message");
-const user = JSON.parse(window.localStorage.getItem("user"));
+const userData = localStorage.getItem("user");
+const user = userData ? JSON.parse(userData) : null;
 const textNewTask = document.getElementById("text-new-task");
 const toAdd = document.getElementById("to-add");
 const tasksList = document.getElementById("to-do-list");
 
-if (welcomeMessage && user) {
+if (welcomeMessage && user?.name) {
   welcomeMessage.textContent = `Seja bem-vindo(a), ${user.name}!`;
+} else if (!user) {
+  window.location.href = "index.html";
 }
-
 logoutButton.addEventListener("click", (event) => {
   event.preventDefault();
-  window.localStorage.removeItem("user");
-  window.location.href = "index.html";
+  window.localStorage.clear();
+  window.location.replace("index.html");
 });
 
 async function init() {
@@ -41,11 +43,40 @@ function renderTasks(tasks) {
 
 function createTaskElement(task) {
   const element = document.createElement("li");
-  element.textContent = task.title;
+  element.dataset.id = task.id;
+
+  element.innerHTML = `
+  <input type="checkbox" ${task.completed ? "checked" : ""}>
+  <span>${task.title}</span>
+  <button class="delete-btn">Deletar</button>`;
+
+  const deleteBtn = element.querySelector(".delete-btn");
+  deleteBtn.addEventListener("click", async (event) => {
+    event.preventDefault();
+    try {
+      await deleteTask(task.id);
+      element.remove();
+      console.log("Tarefa deletada com sucesso:", task);
+    } catch (error) {
+      console.error("Erro ao deletar tarefa:", error);
+    }
+
+    const checkedBtn = element.querySelector("input[type=checkbox]");
+    checkedBtn.addEventListener("change", async (event) => {
+      try {
+        await toggleTask(task.id, event.target.checked);
+        console.log("Tarefa atualizada com sucesso:", updateTask);
+      } catch (error) {
+        console.error("Erro ao atualizar tarefa:", error);
+      }
+    });
+  });
+
   return element;
 }
 
-async function handlerAddTodo() {
+async function handlerAddTodo(event) {
+  event.preventDefault();
   const title = textNewTask.value.trim();
   if (!title) {
     alert("Por favor, digite o título da nova tarefa!");
