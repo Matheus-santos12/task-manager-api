@@ -30,17 +30,27 @@ async function deleteTask(taskId) {
   const softDelete = await patch(`/tasks/${taskId}`, {
     deleted: true,
     deletedAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   });
   return softDelete;
 }
 
-async function toggleTask(taskId, completed) {
-  const newPatch = await patch(`/tasks/${taskId}`, { completed });
+async function updateTaskStatus(taskId, status) {
+  const newPatch = await patch(`/tasks/${taskId}`, {
+    status,
+    updatedAt: new Date().toISOString(),
+  });
   return newPatch;
 }
 
-async function updateTask(taskId, title, description) {
-  const updatedTask = await patch(`/tasks/${taskId}`, { title, description });
+async function updateTask(taskId, title, description, priority, dueDate) {
+  const updatedTask = await patch(`/tasks/${taskId}`, {
+    title,
+    description,
+    priority,
+    dueDate,
+    updatedAt: new Date().toISOString(),
+  });
   return updatedTask;
 }
 
@@ -48,6 +58,7 @@ async function restoreTask(taskId) {
   const restoredTask = await patch(`/tasks/${taskId}`, {
     deleted: false,
     deletedAt: null,
+    updatedAt: new Date().toISOString(),
   });
 
   return restoredTask;
@@ -58,6 +69,6 @@ export {
   deleteTask,
   fetchTasks,
   restoreTask,
-  toggleTask,
   updateTask,
+  updateTaskStatus,
 };

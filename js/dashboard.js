@@ -24,7 +24,7 @@ logoutButton.addEventListener("click", (event) => {
 
 async function init() {
   try {
-    const tasks = await fetchTasks();
+    const tasks = await fetchTasks(false);
     renderTasks(tasks);
   } catch (error) {
     console.error("Erro ao carregar tarefas:", error);
