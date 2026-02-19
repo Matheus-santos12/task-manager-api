@@ -10,7 +10,7 @@ async function get(endpoint) {
     const data = await res.json();
     return data;
   } catch (error) {
-    console.error(" Houve uma falha na requisição:", error);
+    console.error("Houve uma falha na requisição:", error);
     throw error;
   }
 }
