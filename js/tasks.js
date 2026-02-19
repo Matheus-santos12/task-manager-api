@@ -4,8 +4,8 @@ const user = JSON.parse(window.localStorage.getItem("user"));
 
 const userId = user.id;
 
-async function fetchTasks() {
-  const tasks = await get(`/tasks?userId=${userId}`);
+async function fetchTasks(deleted) {
+  const tasks = await get(`/tasks?userId=${userId}&deleted=${deleted}`);
   return tasks;
 }
 
