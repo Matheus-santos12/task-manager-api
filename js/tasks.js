@@ -44,4 +44,20 @@ async function updateTask(taskId, title, description) {
   return updatedTask;
 }
 
-export { createTask, deleteTask, fetchTasks, toggleTask, updateTask };
+async function restoreTask(taskId) {
+  const restoredTask = await patch(`/tasks/${taskId}`, {
+    deleted: false,
+    deletedAt: null,
+  });
+
+  return restoredTask;
+}
+
+export {
+  createTask,
+  deleteTask,
+  fetchTasks,
+  restoreTask,
+  toggleTask,
+  updateTask,
+};
