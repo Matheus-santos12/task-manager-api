@@ -1,5 +1,5 @@
 import { checkAuth } from "./router.js";
-import { createTask, deleteTask, fetchTasks, updateTask } from "./tasks.js";
+import { createTask, deleteTask, fetchTasks } from "./tasks.js";
 
 checkAuth();
 
@@ -43,7 +43,6 @@ function renderTasks(tasks) {
 
 function createTaskElement(task) {
   const element = document.createElement("li");
-  element.dataset.id = task.id;
 
   element.innerHTML = `
   <input type="checkbox" ${task.completed ? "checked" : ""}>
@@ -63,9 +62,12 @@ function createTaskElement(task) {
 
     const checkedBtn = element.querySelector("input[type=checkbox]");
     checkedBtn.addEventListener("change", async (event) => {
+      const novoEstado = event.target.checked;
+      console.log("Tipo do dado enviado:", typeof novoEstado);
       try {
-        await toggleTask(task.id, event.target.checked);
-        console.log("Tarefa atualizada com sucesso:", updateTask);
+        const result = await toggleTask(task.id, novoEstado);
+        console.log("O que o servidor devolveu:", result.completed);
+        console.log("Tipo do dado devolvido:", typeof result.completed);
       } catch (error) {
         console.error("Erro ao atualizar tarefa:", error);
       }
