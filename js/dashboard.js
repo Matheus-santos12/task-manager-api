@@ -1,5 +1,10 @@
 import { checkAuth } from "./router.js";
-import { createTask, deleteTask, fetchTasks } from "./tasks.js";
+import {
+  createTask,
+  deleteTask,
+  fetchTasks,
+  updateTaskStatus,
+} from "./tasks.js";
 
 checkAuth();
 
@@ -45,33 +50,36 @@ function createTaskElement(task) {
   const element = document.createElement("li");
 
   element.innerHTML = `
-  <input type="checkbox" ${task.completed ? "checked" : ""}>
+  <input type="checkbox" ${task.status === "done" ? "checked" : ""}>
   <span>${task.title}</span>
   <button class="delete-btn">Deletar</button>`;
 
   const deleteBtn = element.querySelector(".delete-btn");
   deleteBtn.addEventListener("click", async (event) => {
     event.preventDefault();
+    const confirm = window.confirm(
+      `Tem certeza que deseja deletar a tarefa "${task.title}"?`,
+    );
+    if (!confirm) return;
     try {
       await deleteTask(task.id);
       element.remove();
-      console.log("Tarefa deletada com sucesso:", task);
     } catch (error) {
       console.error("Erro ao deletar tarefa:", error);
     }
+  });
+  const checkedBtn = element.querySelector("input[type=checkbox]");
 
-    const checkedBtn = element.querySelector("input[type=checkbox]");
-    checkedBtn.addEventListener("change", async (event) => {
-      const novoEstado = event.target.checked;
-      console.log("Tipo do dado enviado:", typeof novoEstado);
-      try {
-        const result = await toggleTask(task.id, novoEstado);
-        console.log("O que o servidor devolveu:", result.completed);
-        console.log("Tipo do dado devolvido:", typeof result.completed);
-      } catch (error) {
-        console.error("Erro ao atualizar tarefa:", error);
-      }
-    });
+  checkedBtn.addEventListener("change", async (event) => {
+    const novoEstado = event.target.checked;
+    const status = event.target.checked ? "done" : "pending";
+
+    try {
+      const updatedTask = await updateTaskStatus(task.id, status);
+      task.status = updatedTask.status;
+    } catch (error) {
+      console.error("Erro ao atualizar tarefa:", error);
+    }
   });
 
   return element;
